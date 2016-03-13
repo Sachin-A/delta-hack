@@ -2,6 +2,12 @@
 (for lack of a better name)
 Made as part of the hackathon by delta. 
 
+~The guy who forked it~
+I mean who names their repo that?
+
+~The guy who named it~
+I'm an idiot
+
 ### TODO
 
 - [ ] Fix: Doesn't work well if other objects are present in background
