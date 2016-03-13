@@ -55,7 +55,6 @@ function model(data)
 		sphere(r);
 	}
 }
-
 //Cuboid modelling
 function cuboid(l, b, h)
 {
