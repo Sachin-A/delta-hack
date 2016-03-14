@@ -10,7 +10,7 @@ var renderer = new THREE.WebGLRenderer(
 renderer.setSize(width, height);
 document.body.appendChild(renderer.domElement);
 
-//Scene creation 
+//Scene creation
 var scene = new THREE.Scene;
 
 //Camera
@@ -41,7 +41,8 @@ scene.add(pointLight2);
 //To render 3D replica of model using to type of simple shape detected and it's approximate dimensions
 function model(data)
 {
-	data = JSON.parse(data)
+    console.log(data)
+	// data = JSON.parse(data)
 	if (data['type'] == "cuboid")
 	{
 		var a = data['l'];
@@ -51,7 +52,7 @@ function model(data)
 	}
 	else if (data.type == "sphere")
 	{
-		var r = data['r'];
+		var r = data['l'];
 		sphere(r);
 	}
 }
@@ -79,7 +80,7 @@ function cuboid(l, b, h)
 	//Adding to world
 	scene.add(body);
 
-	//Setting Camera to look at the body 
+	//Setting Camera to look at the body
 	camera.lookAt(body.position);
 
 	//Clock for delta time to enable rotation
@@ -117,7 +118,7 @@ function sphere(r)
 	//Adding to world
 	scene.add(body);
 
-	//Setting Camera to look at the body 
+	//Setting Camera to look at the body
 	camera.lookAt(body.position);
 
 	//Clock for delta time to enable rotation
