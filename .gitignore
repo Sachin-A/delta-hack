@@ -2,7 +2,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+# Directories that act as a buffer
+tmp/
+uploads/
 # C extensions
 *.so
 

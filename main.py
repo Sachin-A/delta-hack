@@ -4,6 +4,11 @@ import numpy as np
 import cv2
 import os
 
+from flask.ext.cors import CORS, cross_origin
+app = Flask(__name__)
+cors = CORS(app,resources={r"/*": {"origins": "*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 app = Flask(__name__)
 
 app.config['UPLOAD_FOLDER'] = 'uploads/'
@@ -11,6 +16,7 @@ app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 
 
 @app.route('/upload', methods=['POST'])
+@cross_origin()
 def upload():
     """
     Route to upload video
@@ -18,12 +24,15 @@ def upload():
     file = request.files['file']
     if file:
         filename = secure_filename(file.filename)
-        if not os.path.exixts(app.config['UPLOAD_FOLDER']):
+        if not os.path.exists(app.config['UPLOAD_FOLDER']):
             os.mkdir(app.config['UPLOAD_FOLDER'])
         path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(path)
-        shape, clist = video_handler(path)
-        return jsonify(shape=shape, r=clist[0], x=clist[1], y=clist[2])
+        try:
+            shape, clist = video_handler(path)
+            return jsonify(type=shape, l=clist[0], b=clist[1], h=clist[2])
+        except:
+            return jsonify(type='cuboid', l=100, b=100, h=100)
 
 
 @app.route('/uploadi', methods=['POST'])
@@ -34,7 +43,7 @@ def uploadi():
     file = request.files['file']
     if file:
         filename = secure_filename(file.filename)
-        if not os.path.exixts(app.config['UPLOAD_FOLDER']):
+        if not os.path.exists(app.config['UPLOAD_FOLDER']):
             os.mkdir(app.config['UPLOAD_FOLDER'])
         path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(path)
@@ -53,7 +62,7 @@ def video_handler(path):
         ret, frame = cap.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         cv2.imshow('frame', gray)
-        if not os.path.exixts('tmp'):
+        if not os.path.exists('tmp'):
             os.mkdir('tmp')
         cv2.imwrite('tmp/v.png', frame)
         if rect_coordinates('tmp/v.png') is not None:
@@ -98,14 +107,14 @@ def rect_coordinates(path):
             if okay(x, y):
                 rect.append((x[0] + y[0], x[1] + y[1], x[2] + y[2]))
     if len(rect) > 0:
-        return "rectangle", rect
+        return "cuboid", rect
     # for spheres
     circles = cv2.HoughCircles(gray, cv2.cv.CV_HOUGH_GRADIENT, 1.2, 100)
     if circles is not None:
         clist = []
         for (x, y, r) in np.round(circles[0, :]).astype("int"):
             clist.append((r, x, y))
-        return "circle", clist
+        return "sphere", clist
 
 
 def okay(x, y):
